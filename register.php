@@ -64,7 +64,6 @@ $conn->close();
             overflow: hidden;
         }
 
-        /* Header Styles */
         header {
             width: 100%;
             padding: 20px;
@@ -113,7 +112,6 @@ $conn->close();
             }
         }
 
-        /* Register Form Styles */
         .register-container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 40px;
@@ -124,7 +122,6 @@ $conn->close();
             text-align: center;
             animation: fadeIn 1.5s ease-in-out;
             margin-top: 100px;
-            /* Adjusted for the fixed header */
         }
 
         @keyframes fadeIn {
