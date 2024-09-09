@@ -19,11 +19,13 @@ if (isset($_POST['login'])) {
     $result = $conn->query($sql);
     $user = $result->fetch_assoc();
 
-    if (password_verify($password, $user['password'])) {
+    if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
-        echo "<p style='color:green;'>Login successful!</p>";
+        $_SESSION['flash_message'] = "Login successful!"; // Set flash message
+        header("Location: dashboard.php");
+        exit();
     } else {
-        echo "<p style='color:red;'>Invalid username or password.</p>";
+        $error_message = "Invalid username or password.";
     }
 }
 
@@ -39,7 +41,7 @@ $conn->close();
     <title>Login - Safari Chap</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General Reset */
+        /* Your existing CSS styles */
         * {
             margin: 0;
             padding: 0;
@@ -48,21 +50,27 @@ $conn->close();
         }
 
         body {
-            background-color: #000;
+            background-image: url('assets/img/background().jpg');
+            /* Path to your background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
+            overflow-y: auto;
+            /* Allows scrolling if content exceeds viewport */
         }
 
         header {
             background-color: #000;
             padding: 10px 20px;
             width: 100%;
+            position: fixed;
             top: 0;
             left: 0;
-            position: fixed;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
@@ -110,6 +118,10 @@ $conn->close();
             width: 100%;
             text-align: center;
             animation: fadeIn 1.5s ease-in-out;
+            margin-top: 60px;
+            /* Space for fixed header */
+            margin-bottom: 80px;
+            /* Space for footer */
         }
 
         @keyframes fadeIn {
@@ -269,6 +281,9 @@ $conn->close();
 
     <div class="login-container">
         <h2>Safari Chap Login</h2>
+        <?php if (isset($error_message)): ?>
+            <p style="color:red;"><?php echo $error_message; ?></p>
+        <?php endif; ?>
         <form action="login.php" method="POST">
             <div class="input-group">
                 <label for="username">Username</label>
@@ -287,7 +302,7 @@ $conn->close();
 
     <footer>
         <p>&copy; 2024 Safari Chap. All rights reserved.</p>
-        <p><a href="privacy-policy.html">Privacy Policy</a></p>
+        <p><a href="privacy_policy.php">Privacy Policy</a></p>
     </footer>
 </body>
 

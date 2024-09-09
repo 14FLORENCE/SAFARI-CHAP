@@ -45,180 +45,229 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Safari Chap</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-
-        body {
-            background-color: black;
-            color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow: hidden;
-        }
-
-        header {
-            width: 100%;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            animation: slideDown 1.5s ease-in-out;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: #3498db;
-        }
-
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-50px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .register-container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
-            margin-top: 100px;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        h2 {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        label {
-            font-weight: bold;
-            color: #333;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"],
-        input[type="password"],
-        input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            outline: none;
-            transition: border 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="password"]:focus,
-        input[type="email"]:focus {
-            border-color: #3498db;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #27ae60;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            float: right;
-        }
-
-        button:hover {
-            background-color: #2ecc71;
-            transform: translateY(-3px);
-        }
-
-        p {
-            margin-top: 15px;
-            color: #333;
-        }
-
-        p a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
-
-        p a:hover {
-            color: #2980b9;
-        }
-
-        p a::after {
-            content: '';
-            display: block;
-            width: 0;
-            height: 2px;
-            background: #3498db;
-            transition: width 0.4s ease;
-        }
-
-        p a:hover::after {
-            width: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
 </head>
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+
+    body {
+        background-image: url('assets/img/background.jpg');
+        /* Path to your background image */
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow-y: auto;
+        /* Allows scrolling if content exceeds viewport */
+    }
+
+    header {
+        background-color: #000;
+        padding: 10px 20px;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        animation: slideDown 1.5s ease;
+    }
+
+    header h1 {
+        font-size: 24px;
+        color: #3498db;
+        /* Blue color for Safari Chap */
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    nav a {
+        color: #fff;
+        margin: 0 15px;
+        text-decoration: none;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    nav a:hover {
+        color: #ffeb3b;
+        transform: scale(1.1);
+    }
+
+    nav a i {
+        margin-right: 8px;
+    }
+
+    .register-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        text-align: center;
+        animation: fadeIn 1.5s ease-in-out;
+        margin-top: 60px;
+        /* Space for fixed header */
+        margin-bottom: 80px;
+        /* Space for footer */
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translateY(-100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    h2 {
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    label {
+        font-weight: bold;
+        color: #333;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        outline: none;
+        transition: border 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    input[type="email"]:focus {
+        border-color: #3498db;
+    }
+
+    button {
+        width: 100%;
+        padding: 12px;
+        background-color: #3498db;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+        background-color: #2980b9;
+        transform: translateY(-3px);
+    }
+
+    p {
+        margin-top: 15px;
+        color: #333;
+    }
+
+    p a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        transition: color 0.3s ease;
+    }
+
+    p a:hover {
+        color: #2980b9;
+    }
+
+    /* Subtle animation for the links */
+    p a::after {
+        content: '';
+        display: block;
+        width: 0;
+        height: 2px;
+        background: #3498db;
+        transition: width 0.4s ease;
+    }
+
+    p a:hover::after {
+        width: 100%;
+    }
+
+    footer {
+        background-color: #000;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        font-size: 1rem;
+        z-index: 999;
+        animation: fadeInFooter 1.5s ease-in-out;
+        box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    footer p {
+        margin: 5px 0;
+    }
+
+    footer a {
+        color: #3498db;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+        color: #ffeb3b;
+    }
+
+    @keyframes fadeInFooter {
+        from {
+            opacity: 0
+</style>
 
 <body>
     <header>
@@ -262,7 +311,7 @@ $conn->close();
     </div>
 
     <footer>
-        <p>&copy; 2024 Safari Chap. All rights reserved. | <a href="privacy-policy.html">Privacy Policy</a></p>
+        <p>&copy; 2024 Safari Chap. All rights reserved. | <a href="privacy_policy.php">Privacy Policy</a></p>
     </footer>
 </body>
 

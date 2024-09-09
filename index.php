@@ -15,7 +15,7 @@
 		}
 
 		body {
-			background: rgba(0, 0, 0, 0.5) url('assets/img/background(1).jpg') no-repeat center center fixed;
+			background: rgba(0, 0, 0, 0.5) url('assets/img/background(3).jpg') no-repeat center center fixed;
 			background-size: cover;
 			height: 100vh;
 			overflow-x: hidden;
@@ -79,9 +79,7 @@
 			padding: 60px;
 			border-radius: 10px;
 			width: 90%;
-			/* Adjusted to cover most of the central width */
 			max-width: 1200px;
-			/* Sets a limit to prevent it from stretching too much on large screens */
 			text-align: center;
 			animation: fadeIn 2s ease-in-out;
 		}
@@ -117,16 +115,6 @@
 			background-color: #45a049;
 		}
 
-		/* Hidden map by default */
-		#map {
-			display: none;
-			height: 400px;
-			width: 80%;
-			max-width: 1000px;
-			margin-top: 40px;
-			border-radius: 10px;
-		}
-
 		/* Animations */
 		@keyframes fadeIn {
 			0% {
@@ -150,7 +138,6 @@
 			}
 		}
 
-		/* Footer Styling */
 		footer {
 			background-color: rgba(0, 0, 0, 0.8);
 			color: white;
@@ -176,13 +163,6 @@
 		footer a:hover {
 			text-decoration: underline;
 		}
-
-		/* Scrollable page */
-		html,
-		body {
-			height: 100%;
-			overflow-y: auto;
-		}
 	</style>
 </head>
 
@@ -204,41 +184,16 @@
 			<p>Your ultimate travel companion in Dar-es-Salaam.</p>
 			<p>
 				At Safari Chap, we are committed to providing a seamless and reliable travel experience. Explore bus
-				schedules, book tickets, provide feedback, and make payments conveniently. Join us in revolutionizing
-				public transportation in Dar-es-Salaam!
+				schedules, book tickets, provide feedback, and make payments conveniently.
 			</p>
-			<button onclick="showMap()">
+			<button onclick="location.href='map.php'">
 				<i class="fas fa-map-marker-alt"></i> View Map
 			</button>
 		</div>
-
-		<section id="map"></section>
 	</main>
 
-	<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY"></script>
-	<script>
-		function showMap() {
-			const mapSection = document.getElementById('map');
-			if (mapSection.style.display === "none" || mapSection.style.display === "") {
-				mapSection.style.display = "block";
-				initMap();
-			} else {
-				mapSection.style.display = "none";
-			}
-		}
-
-		function initMap() {
-			var mapOptions = {
-				center: new google.maps.LatLng(-6.7924, 39.2083),
-				zoom: 12
-			};
-			var map = new
-				google.maps.Map(document.getElementById("map"), mapOptions);
-		}
-	</script>
-
 	<footer>
-		<p>&copy; 2024 Safari Chap. All rights reserved. | <a href="privacy-policy.html">Privacy Policy</a></p>
+		<p>&copy; 2024 Safari Chap. All rights reserved. | <a href="privacy_policy.php">Privacy Policy</a></p>
 	</footer>
 
 </body>

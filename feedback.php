@@ -37,122 +37,100 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback - Safari Chap</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Reset and basic styles */
+        /* General Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
-            background: #1e3c72;
-            background: linear-gradient(to bottom, #1e3c72, #2a5298);
-            font-family: 'Poppins', sans-serif;
-            color: #fff;
+            background-image: url('assets/img/background.jpg');
+            /* Path to your background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             flex-direction: column;
+            align-items: center;
+            color: white;
+            overflow-y: auto;
+            /* Allows scrolling if content exceeds viewport */
         }
 
         header {
+            background-color: #000;
+            padding: 10px 20px;
             width: 100%;
-            background: #001f3f;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 10;
-            animation: slideDown 1.2s ease-out;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            animation: slideDown 1.5s ease;
         }
 
         header h1 {
-            font-size: 2rem;
-            color: #ffd700;
-            transition: color 0.3s ease-in-out;
+            font-size: 24px;
+            color: #3498db;
+            /* Blue color for Safari Chap */
         }
 
-        header h1:hover {
-            color: #33ccff;
+        nav {
+            display: flex;
+            align-items: center;
         }
 
         nav a {
             color: #fff;
+            margin: 0 15px;
             text-decoration: none;
-            font-size: 1rem;
-            margin-left: 20px;
-            transition: color 0.3s;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            transition: color 0.3s, transform 0.3s;
         }
 
         nav a:hover {
-            color: #ffd700;
+            color: #ffeb3b;
+            transform: scale(1.1);
+        }
+
+        nav a i {
+            margin-right: 8px;
         }
 
         .container {
-            background: rgba(0, 31, 63, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-            width: 100%;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             max-width: 500px;
-            margin-top: 100px;
-            animation: fadeInUp 1.5s ease-in-out;
+            width: 90%;
+            text-align: center;
+            margin-top: 80px;
+            /* Space for fixed header */
+            margin-bottom: 60px;
+            /* Space for footer */
+            animation: fadeIn 1.5s ease-in-out;
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #ffd700;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 15px;
-            background-color: #001f3f;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-submit:hover {
-            background-color: #ffd700;
-            color: #001f3f;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
+        @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: scale(0.9);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
 
@@ -166,15 +144,90 @@ $conn->close();
             }
         }
 
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #3498db;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
         footer {
+            background-color: #000;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            width: 100%;
             position: fixed;
             bottom: 0;
-            width: 100%;
-            padding: 10px;
-            text-align: center;
-            background-color: #001f3f;
-            color: white;
-            font-size: 0.9rem;
+            left: 0;
+            font-size: 1rem;
+            box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInFooter 1.5s ease-in-out;
+        }
+
+        footer p {
+            margin: 5px 0;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ffeb3b;
+        }
+
+        @keyframes fadeInFooter {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -189,9 +242,7 @@ $conn->close();
     </header>
 
     <div class="container">
-        <div class="header">
-            <h3>We Value Your Feedback!</h3>
-        </div>
+        <h2>We Value Your Feedback!</h2>
         <?php echo $message; ?>
         <form action="feedback.php" method="POST">
             <div class="form-group">

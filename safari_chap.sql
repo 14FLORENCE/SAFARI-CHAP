@@ -33,3 +33,14 @@ CREATE TABLE IF NOT EXISTS password_resets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
+-- Create table for payments
+CREATE TABLE IF NOT EXISTS payments (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    user_id INT(11) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    payment_method ENUM('mpesa', 'airtel', 'tigo', 'halopesa') NOT NULL,
+    payment_status ENUM('pending', 'completed', 'failed') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
