@@ -5,50 +5,34 @@ if (!isset($_SESSION['user_id'])) {
 	exit();
 }
 
+// Include the database connection
 require 'db_connect.php';
 
 // Fetch user details
 $user_id = $_SESSION['user_id'];
-$sql = "SELECT username, email, first_name, last_name, current_location FROM users WHERE id = ?";
+$sql = "SELECT first_name, last_name, current_location, email FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	// Update user details
-	$username = $_POST['username'];
-	$email = $_POST['email'];
-	$first_name = $_POST['first_name'];
-	$last_name = $_POST['last_name'];
-	$current_location = $_POST['current_location'];
-
-	$update_sql = "UPDATE users SET username = ?, email = ?, first_name = ?, last_name = ?, current_location = ? WHERE id = ?";
-	$update_stmt = $conn->prepare($update_sql);
-	$update_stmt->bind_param("sssssi", $username, $email, $first_name, $last_name, $current_location, $user_id);
-
-	if ($update_stmt->execute()) {
-		echo "<script>alert('Profile updated successfully');</script>";
-	} else {
-		echo "<script>alert('Error updating profile');</script>";
-	}
-}
-
+// Close the database connection
 $stmt->close();
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Profile - Safari Chap</title>
+	<title>Settings - Safari Chap</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 	<link rel="stylesheet" href="styles.css"> <!-- Link to your custom styles -->
 	<style>
-		/* Include the same styles here as in the provided code */
+		/* Include the same styles as in the profile page */
 		* {
 			margin: 0;
 			padding: 0;
@@ -140,46 +124,36 @@ $conn->close();
 			margin-left: 250px;
 		}
 
-		.profile-container {
+		.settings-container {
 			background-color: rgba(255, 255, 255, 0.9);
 			padding: 40px;
 			border-radius: 12px;
 			box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-			max-width: 500px;
+			max-width: 800px;
 			width: 100%;
-			text-align: center;
+			text-align: left;
 			margin: 0 auto;
 			margin-top: 100px;
 			animation: fadeIn 1.5s ease-in-out;
 		}
 
-		@keyframes fadeIn {
-			from {
-				opacity: 0;
-				transform: scale(0.9);
-			}
-
-			to {
-				opacity: 1;
-				transform: scale(1);
-			}
-		}
-
-		h2 {
+		.settings-container h2 {
 			font-size: 2rem;
 			color: #2c3e50;
 			margin-bottom: 20px;
 		}
 
-		label {
+		.settings-container label {
 			font-weight: bold;
 			color: #333;
 			display: block;
 			margin-bottom: 5px;
 		}
 
-		input[type="text"],
-		input[type="email"] {
+		.settings-container input[type="text"],
+		.settings-container input[type="email"],
+		.settings-container input[type="password"],
+		.settings-container select {
 			width: 100%;
 			padding: 12px;
 			border: 1px solid #ccc;
@@ -189,12 +163,14 @@ $conn->close();
 			margin-bottom: 20px;
 		}
 
-		input[type="text"]:focus,
-		input[type="email"]:focus {
+		.settings-container input[type="text"]:focus,
+		.settings-container input[type="email"]:focus,
+		.settings-container input[type="password"]:focus,
+		.settings-container select:focus {
 			border-color: #3498db;
 		}
 
-		input[type="submit"] {
+		.settings-container input[type="submit"] {
 			width: 100%;
 			padding: 12px;
 			background-color: #3498db;
@@ -206,9 +182,13 @@ $conn->close();
 			transition: background-color 0.3s ease, transform 0.2s ease;
 		}
 
-		input[type="submit"]:hover {
+		.settings-container input[type="submit"]:hover {
 			background-color: #2980b9;
 			transform: translateY(-3px);
+		}
+
+		.settings-container .section {
+			margin-bottom: 40px;
 		}
 
 		footer {
@@ -232,6 +212,18 @@ $conn->close();
 
 		footer a:hover {
 			color: #ffeb3b;
+		}
+
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+				transform: scale(0.9);
+			}
+
+			to {
+				opacity: 1;
+				transform: scale(1);
+			}
 		}
 
 		@keyframes fadeInFooter {
@@ -268,7 +260,7 @@ $conn->close();
 				margin-left: 0;
 			}
 
-			.profile-container {
+			.settings-container {
 				margin-top: 50px;
 			}
 		}
@@ -291,37 +283,64 @@ $conn->close();
 	<div class="content">
 		<button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-		<div class="profile-container">
-			<h2>Profile</h2>
-			<form method="post" action="profile.php">
-				<label for="username">Username</label>
-				<input type="text" id="username" name="username"
-					value="<?php echo htmlspecialchars($user['username']); ?>" required>
+		<div class="settings-container">
+			<h2>Account Settings</h2>
+			<form method="post" action="update_settings.php">
+				<div class="section">
+					<h3>Change Password</h3>
+					<label for="current_password">Current Password</label>
+					<input type="password" id="current_password" name="current_password" required>
 
-				<label for="email">Email</label>
-				<input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>"
-					required>
+					<label for="new_password">New Password</label>
+					<input type="password" id="new_password" name="new_password" required>
 
-				<label for="first_name">First Name</label>
-				<input type="text" id="first_name" name="first_name"
-					value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
+					<label for="confirm_password">Confirm New Password</label>
+					<input type="password" id="confirm_password" name="confirm_password" required>
+				</div>
 
-				<label for="last_name">Last Name</label>
-				<input type="text" id="last_name" name="last_name"
-					value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
+				<div class="section">
+					<h3>Profile Information</h3>
+					<label for="first_name">First Name</label>
+					<input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required>
 
-				<label for="current_location">Current Location</label>
-				<input type="text" id="current_location" name="current_location"
-					value="<?php echo htmlspecialchars($user['current_location']); ?>" required>
+					<label for="last_name">Last Name</label>
+					<input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($user['last_name']); ?>" required>
 
-				<input type="submit" value="Update Profile">
+					<label for="current_location">Current Location</label>
+					<input type="text" id="current_location" name="current_location" value="<?php echo htmlspecialchars($user['current_location']); ?>" required>
+
+					<label for="email">Email</label>
+					<input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" required>
+				</div>
+
+				<div class="section">
+					<h3>Notification Preferences</h3>
+					<label for="email_notifications">Email Notifications</label>
+					<select id="email_notifications" name="email_notifications">
+						<option value="all">All</option>
+						<option value="important">Important Only</option>
+						<option value="none">None</option>
+					</select>
+				</div>
+
+				<div class="section">
+					<h3>Privacy Settings</h3>
+					<label for="profile_visibility">Profile Visibility</label>
+					<select id="profile_visibility" name="profile_visibility">
+						<option value="public">Public</option>
+						<option value="friends">Friends Only</option>
+						<option value="private">Private</option>
+					</select>
+				</div>
+
+				<input type="submit" value="Save Settings">
 			</form>
 		</div>
 	</div>
 
 	<!-- Footer -->
 	<footer>
-		<p>&copy; 2024 Florence Sway. All Rights Reserved.</p>
+		<p>&copy; 2024 Safari Chap. Designed by Florence Sway</p>
 	</footer>
 
 	<script>

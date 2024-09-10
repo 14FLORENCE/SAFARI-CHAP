@@ -1,75 +1,37 @@
 <?php
-// Start session and check if user is logged in
 session_start();
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
 
-// Database connection
-$servername = "localhost"; // Adjust as needed
-$username = "root";        // Adjust as needed
-$password = "";            // Adjust as needed
-$dbname = "safari_chap";
+require 'db_connect.php';
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Fetch user details
+$user_id = $_SESSION['user_id'];
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Fetch notifications for the logged-in user
+$sql = "SELECT title, message, created_at FROM notifications WHERE user_id = ? ORDER BY created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$notifications = $result->fetch_all(MYSQLI_ASSOC);
 
-// Check if form data is set
-if (isset($_POST['amount'], $_POST['payment_method'], $_POST['stripeToken'])) {
-    $amount = $_POST['amount'];
-    $payment_method = $_POST['payment_method'];
-    $stripeToken = $_POST['stripeToken']; // Placeholder for further Stripe processing
-
-    $user_id = $_SESSION['user_id']; // Get user ID from session
-
-    // Validate payment method
-    $valid_payment_methods = ['mpesa', 'airtel', 'tigo', 'halopesa'];
-    if (!in_array($payment_method, $valid_payment_methods)) {
-        echo "Invalid payment method.";
-        exit();
-    }
-
-    // Prepare and bind statement
-    $stmt = $conn->prepare("INSERT INTO payments (user_id, amount, payment_method, payment_status) VALUES (?, ?, ?, ?)");
-    if ($stmt === false) {
-        die("Prepare failed: " . $conn->error);
-    }
-
-    $payment_status = 'pending'; // Initial status, update it later based on actual payment result
-    $stmt->bind_param("idss", $user_id, $amount, $payment_method, $payment_status);
-
-    // Execute the statement
-    if ($stmt->execute()) {
-        echo "Payment record saved successfully.";
-    } else {
-        echo "Error: " . $stmt->error;
-    }
-
-    // Close connections
-    $stmt->close();
-} else {
-    echo "Form data is missing.";
-}
-
+$stmt->close();
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Safari Chap - Ticket Payment</title>
+    <title>Notifications - Safari Chap</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="styles.css"> <!-- Link to your custom styles -->
     <style>
-        /* General Reset */
+        /* Include the same styles here as in the provided code */
         * {
             margin: 0;
             padding: 0;
@@ -90,7 +52,6 @@ $conn->close();
         /* Sidebar Styles */
         .sidebar {
             background-color: #333;
-            /* Sidebar background color */
             width: 250px;
             height: 100%;
             position: fixed;
@@ -124,14 +85,11 @@ $conn->close();
             margin-right: 10px;
         }
 
-        /* Minimized Menu Button */
         .toggle-btn {
             position: absolute;
             top: 10px;
             left: 10px;
-            /* Position it to the left */
             background-color: #333;
-            /* Same color as the sidebar */
             color: white;
             padding: 10px;
             cursor: pointer;
@@ -154,7 +112,6 @@ $conn->close();
             padding: 10px;
         }
 
-        /* Content */
         .content {
             margin-left: 0;
             padding: 40px;
@@ -166,79 +123,38 @@ $conn->close();
             margin-left: 250px;
         }
 
-        /* Payment Form */
-        .payment-container {
+        .notifications-container {
             background-color: rgba(255, 255, 255, 0.9);
             padding: 40px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
+            max-width: 800px;
             width: 100%;
-            text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
             margin: 0 auto;
             margin-top: 100px;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+        .notification {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
         }
 
-        h2 {
-            font-size: 2rem;
+        .notification:last-child {
+            border-bottom: none;
+        }
+
+        .notification h3 {
+            margin: 0 0 10px;
+            font-size: 1.2rem;
             color: #2c3e50;
-            margin-bottom: 20px;
         }
 
-        label {
-            font-weight: bold;
+        .notification p {
+            margin: 0;
             color: #333;
-            display: block;
-            margin-bottom: 5px;
         }
 
-        input[type="number"],
-        select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            outline: none;
-            transition: border 0.3s ease;
-            margin-bottom: 20px;
-        }
-
-        input[type="number"]:focus,
-        select:focus {
-            border-color: #3498db;
-        }
-
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #3498db;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #2980b9;
-            transform: translateY(-3px);
-        }
-
-        /* Footer */
         footer {
             background-color: #000;
             color: white;
@@ -260,6 +176,18 @@ $conn->close();
 
         footer a:hover {
             color: #ffeb3b;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         @keyframes fadeInFooter {
@@ -296,7 +224,7 @@ $conn->close();
                 margin-left: 0;
             }
 
-            .payment-container {
+            .notifications-container {
                 margin-top: 50px;
             }
         }
@@ -312,43 +240,38 @@ $conn->close();
         <a href="profile.php"><i class="fas fa-user"></i> Profile</a>
         <a href="settings.php"><i class="fas fa-cog"></i> Settings</a>
         <a href="notifications.php"><i class="fas fa-bell"></i> Notifications</a>
-        <a href="payment.php"><i class="fas fa-credit-card"></i> Payment</a>
         <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a>
     </div>
 
-    <!-- Toggle Menu Button -->
-    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
-
     <!-- Main Content -->
     <div class="content">
-        <div class="payment-container">
-            <h2>Pay for Your Ticket</h2>
-            <form action="payment.php" method="POST">
-                <label for="amount">Enter Amount (Tsh)</label>
-                <input type="number" id="amount" name="amount" min="1000" step="1000" required>
+        <button class="toggle-btn" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
 
-                <label for="payment_method">Payment Method</label>
-                <select id="payment_method" name="payment_method" required>
-                    <option value="mpesa">M-Pesa</option>
-                    <option value="airtel">Airtel Money</option>
-                    <option value="tigo">Tigo Pesa</option>
-                    <option value="halopesa">Halo Pesa</option>
-                </select>
-
-                <button type="submit">Proceed to Payment</button>
-            </form>
+        <div class="notifications-container">
+            <h2>Notifications</h2>
+            <?php if (empty($notifications)): ?>
+                <p>No notifications available.</p>
+            <?php else: ?>
+                <?php foreach ($notifications as $notification): ?>
+                    <div class="notification">
+                        <h3><?php echo htmlspecialchars($notification['title']); ?></h3>
+                        <p><?php echo htmlspecialchars($notification['message']); ?></p>
+                        <small><?php echo date('F j, Y, g:i a', strtotime($notification['created_at'])); ?></small>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Safari Chap. All rights reserved. | <a href="terms.php">Terms & Conditions</a></p>
+        <p>&copy; 2024 Florence Sway. All Rights Reserved.</p>
     </footer>
 
-    <!-- JS -->
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
+            document.querySelector('.content').classList.toggle('active');
         }
     </script>
 </body>

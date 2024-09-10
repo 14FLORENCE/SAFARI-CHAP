@@ -249,6 +249,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';
 	<button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">☰</button>
 
 	<div class="sidebar" id="sidebar">
+		<a href="dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
 		<a href="home.php"><i class="fas fa-home"></i> Home</a>
 		<a href="profile.php"><i class="fas fa-user"></i> Profile</a>
 		<a href="settings.php"><i class="fas fa-cog"></i> Settings</a>
@@ -301,25 +302,28 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : 'Guest';
 	</footer>
 
 	<script>
-		let slideIndex = 0;
-		showSlides();
+		let currentSlide = 0;
+		const slides = document.querySelectorAll('.slide');
 
-		function showSlides() {
-			let slides = document.getElementsByClassName("slide");
-			for (let i = 0; i < slides.length; i++) {
-				slides[i].style.display = "none";
-			}
-			slideIndex++;
-			if (slideIndex > slides.length) { slideIndex = 1; }
-			slides[slideIndex - 1].style.display = "block";
-			setTimeout(showSlides, 5000); // Change image every 5 seconds
+		function showSlide(index) {
+			slides.forEach(slide => slide.style.display = 'none');
+			slides[index].style.display = 'block';
 		}
 
+		function nextSlide() {
+			currentSlide = (currentSlide + 1) % slides.length;
+			showSlide(currentSlide);
+		}
+
+		setInterval(nextSlide, 5000); // Change image every 5 seconds
+
+		window.onload = () => showSlide(currentSlide);
+
 		function toggleSidebar() {
-			let sidebar = document.getElementById("sidebar");
-			let mainContent = document.getElementById("main-content");
-			sidebar.classList.toggle("collapsed");
-			mainContent.classList.toggle("expanded");
+			const sidebar = document.getElementById('sidebar');
+			const mainContent = document.getElementById('main-content');
+			sidebar.classList.toggle('collapsed');
+			mainContent.classList.toggle('expanded');
 		}
 	</script>
 </body>

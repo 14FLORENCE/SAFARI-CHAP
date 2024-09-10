@@ -26,7 +26,9 @@ if (isset($_POST['register'])) {
     $stmt->bind_param("ssssss", $first_name, $last_name, $username, $email, $current_location, $password);
 
     if ($stmt->execute()) {
-        echo "<p style='color:green;'>Registration successful!</p>";
+        // Redirect to login page
+        header("Location: login.php");
+        exit(); // Ensure no further code is executed
     } else {
         echo "<p style='color:red;'>Error: " . $stmt->error . "</p>";
     }
@@ -36,6 +38,7 @@ if (isset($_POST['register'])) {
 
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
